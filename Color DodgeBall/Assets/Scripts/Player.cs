@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +13,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 movementInput;
     private Camera cam;
+    private bool isOnCulldown = false;
 
     void Start()
     {
@@ -77,31 +79,46 @@ public class Player : MonoBehaviour
    public void PopBall(InputAction.CallbackContext ctx)
     {
 
-        if (ctx.performed)
+        if (ctx.performed && !isOnCulldown)
         {
             GameObject ball = ballStack.Pop();
             if (ball != null)
             {
                 GameObject ballInstance = Instantiate(ball, transform.position, Quaternion.identity);
+                
 
                 Debug.Log("Pelota lanzada: " + ball.name);
 
-                Ball ballComponent = ball.GetComponent<Ball>();
+                Ball ballComponent = ballInstance.GetComponent<Ball>();
+                
+
+                
 
                 if (ballComponent != null)
                 {
+                    StartCoroutine(CullDown(ballComponent.culldownTime));
                     Debug.Log("Pelota agarrada de color: " + ballComponent.colorName);
+                    Debug.Log("Culldown iniciado para la pelota: " + ball.name + "Tiempo de CullDown:  " + ballComponent.culldownTime);
                 }
 
                 Rigidbody2D ballRb = ballInstance.GetComponent<Rigidbody2D>();
 
                 if(ballRb != null)
                 {
-                    ballRb.AddForce(Vector2.right * 10f);
+                    ballRb.AddForce(Vector2.right * ballComponent.speed, ForceMode2D.Impulse);
+                    
                 }
             }
         }
 
 
+    }
+
+
+    private IEnumerator CullDown(float time)
+    {
+        isOnCulldown = true;
+        yield return new WaitForSeconds(time);
+        isOnCulldown = false;
     }
 }
