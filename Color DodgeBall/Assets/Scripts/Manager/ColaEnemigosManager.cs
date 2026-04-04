@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Ya cree la logica de la cola , se los dejo comentado por si acaso 
 [System.Serializable]
 public class EnemyLevelEntry
 {
@@ -15,6 +14,80 @@ public class LevelConfig
 {
     public string nombreNivel = "Nivel";
     public List<EnemyLevelEntry> enemigos = new List<EnemyLevelEntry>();
+}
+
+// TDA Cola 
+public interface ColaEnemigosTDA
+{
+    void InicializarCola(int capacidad);
+    void Acolar(GameObject x);
+    void Desacolar();
+    bool ColaVacia();
+    GameObject Primero();
+    int Cantidad();
+}
+
+public class ColaEnemigosTF : ColaEnemigosTDA
+{
+    private GameObject[] a;
+    private int indice;
+
+    public void InicializarCola(int capacidad)
+    {
+        if (capacidad < 1)
+        {
+            capacidad = 1;
+        }
+
+        a = new GameObject[capacidad];
+        indice = 0;
+    }
+
+    public void Acolar(GameObject x)
+    {
+        if (indice >= a.Length)
+        {
+            Debug.LogWarning("La cola de enemigos esta llena.");
+            return;
+        }
+
+        for (int i = indice - 1; i >= 0; i--)
+        {
+            a[i + 1] = a[i];
+        }
+
+        a[0] = x;
+        indice++;
+    }
+
+    public void Desacolar()
+    {
+        if (!ColaVacia())
+        {
+            a[indice - 1] = null;
+            indice--;
+        }
+    }
+
+    public bool ColaVacia()
+    {
+        return indice == 0;
+    }
+
+    public GameObject Primero()
+    {
+        if (!ColaVacia())
+        {
+            return a[indice - 1];
+        }
+
+        return null;
+    }
+
+    public int Cantidad()
+    {
+        return indice;
+    }
 }
 
 public class ColaEnemigosManager : MonoBehaviour
@@ -38,10 +111,8 @@ public class ColaEnemigosManager : MonoBehaviour
     [SerializeField] private bool usarSpawnAleatorio = false;
     [SerializeField] private bool usarObjetivoAleatorio = false;
 
-    // ACA ESTA LA COLA
-    // guarda los enemigos en orden FIFO
-    // el primero que entra es el primero que sale
-    private Queue<GameObject> colaEnemigos;
+    //  aca el TDA Cola
+    private ColaEnemigosTF colaEnemigos;
 
     private Coroutine rutinaSpawn;
     private int indiceSpawnActual = 0;
@@ -49,47 +120,43 @@ public class ColaEnemigosManager : MonoBehaviour
 
     void Start()
     {
-        // Se crea la cola vacia
         InicializarCola();
-
-        // Se cargan en la cola los enemigos del nivel actual
         CargarNivel(nivelActual);
-
-        // Se empieza a procesar la cola: sacar enemigos e instanciarlos
         rutinaSpawn = StartCoroutine(ProcesarCola());
     }
 
     public void InicializarCola()
     {
-        colaEnemigos = new Queue<GameObject>();
+        colaEnemigos = new ColaEnemigosTF();
+        colaEnemigos.InicializarCola(Mathf.Max(1, CalcularCapacidadNivel(nivelActual)));
     }
 
     public void Acolar(GameObject enemigoPrefab)
     {
-        if (enemigoPrefab != null)
+        if (colaEnemigos != null && enemigoPrefab != null)
         {
-            colaEnemigos.Enqueue(enemigoPrefab);
+            colaEnemigos.Acolar(enemigoPrefab);
         }
     }
 
     public void Desacolar()
     {
-        if (!ColaVacia())
+        if (colaEnemigos != null && !colaEnemigos.ColaVacia())
         {
-            colaEnemigos.Dequeue();
+            colaEnemigos.Desacolar();
         }
     }
 
     public bool ColaVacia()
     {
-        return colaEnemigos == null || colaEnemigos.Count == 0;
+        return colaEnemigos == null || colaEnemigos.ColaVacia();
     }
 
     public GameObject Primero()
     {
         if (!ColaVacia())
         {
-            return colaEnemigos.Peek();
+            return colaEnemigos.Primero();
         }
 
         return null;
@@ -97,15 +164,6 @@ public class ColaEnemigosManager : MonoBehaviour
 
     public void CargarNivel(int numeroNivel)
     {
-        if (colaEnemigos == null)
-        {
-            InicializarCola();
-        }
-        else
-        {
-            colaEnemigos.Clear();
-        }
-
         if (niveles == null || niveles.Count == 0)
         {
             Debug.LogWarning("No hay niveles configurados.");
@@ -118,11 +176,13 @@ public class ColaEnemigosManager : MonoBehaviour
             return;
         }
 
+        // Se reinicializa la cola con la capacidad exacta del nivel
+        colaEnemigos = new ColaEnemigosTF();
+        colaEnemigos.InicializarCola(Mathf.Max(1, CalcularCapacidadNivel(numeroNivel)));
+
         LevelConfig config = niveles[numeroNivel - 1];
 
-        // ACA SE LLENA LA COLA
-        // por cada enemigo configurado en el nivel,
-        // se agrega la cantidad indicada
+        // Aca se carga la cola con los enemigos del nivel
         for (int i = 0; i < config.enemigos.Count; i++)
         {
             EnemyLevelEntry entry = config.enemigos[i];
@@ -136,14 +196,13 @@ public class ColaEnemigosManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Nivel cargado: " + config.nombreNivel + " | Enemigos en cola: " + colaEnemigos.Count);
+        Debug.Log("Nivel cargado: " + config.nombreNivel + " | Enemigos en cola: " + colaEnemigos.Cantidad());
     }
 
     IEnumerator ProcesarCola()
     {
-        // ACA SE USA LA COLA
-        // mientras haya enemigos, se toma el primero,
-        // se instancia, y despues se lo quita de la cola
+        // Aca se usa la cola:
+        // se toma el primero, se instancia, y luego se desacola
         while (!ColaVacia())
         {
             GameObject enemigoPrefab = Primero();
@@ -159,9 +218,6 @@ public class ColaEnemigosManager : MonoBehaviour
 
             GameObject enemigoInstanciado = Instantiate(enemigoPrefab, spawnElegido.position, Quaternion.identity);
 
-            // ACA SE CONECTA LA COLA CON EL JUEGO
-            // el enemigo que salio de la cola ya aparece en escena
-            // y se le asigna su objetivo
             Enemy enemy = enemigoInstanciado.GetComponent<Enemy>();
             if (enemy != null && objetivoElegido != null)
             {
@@ -173,7 +229,7 @@ public class ColaEnemigosManager : MonoBehaviour
             yield return new WaitForSeconds(tiempoEntreEnemigos);
         }
 
-        Debug.Log("La cola de enemigos quedó vacía.");
+        Debug.Log("La cola de enemigos quedo vacia.");
     }
 
     private Transform ObtenerSpawn()
@@ -232,6 +288,32 @@ public class ColaEnemigosManager : MonoBehaviour
         }
 
         return objetivo;
+    }
+
+    private int CalcularCapacidadNivel(int numeroNivel)
+    {
+        if (niveles == null || niveles.Count == 0)
+        {
+            return 1;
+        }
+
+        if (numeroNivel < 1 || numeroNivel > niveles.Count)
+        {
+            return 1;
+        }
+
+        int total = 0;
+        LevelConfig config = niveles[numeroNivel - 1];
+
+        for (int i = 0; i < config.enemigos.Count; i++)
+        {
+            if (config.enemigos[i] != null && config.enemigos[i].cantidad > 0)
+            {
+                total += config.enemigos[i].cantidad;
+            }
+        }
+
+        return Mathf.Max(1, total);
     }
 
     public void ReiniciarNivel()
