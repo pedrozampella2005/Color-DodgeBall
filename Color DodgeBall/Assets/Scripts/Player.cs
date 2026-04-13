@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     private Vector2 movementInput;
     private Camera cam;
     private bool isOnCulldown = false;
+    private bool touchingFloor = true;
 
     void Start()
     {
@@ -28,25 +29,42 @@ public class Player : MonoBehaviour
     {
         movementInput = playerInput.actions["Move"].ReadValue<Vector2>();
 
-
     }
 
     void FixedUpdate()
     {
+        if(!touchingFloor)
 
         if (movementInput != Vector2.zero)
         {
-
+            
             rb.linearVelocity = movementInput * speed;
-
         }
-
         else
         {
             rb.linearVelocity = Vector2.zero;
         }
-
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            touchingFloor = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            touchingFloor = false;
+        }
+    }
+
+
+
+
 
 
     public void PushBlueBall(InputAction.CallbackContext ctx)

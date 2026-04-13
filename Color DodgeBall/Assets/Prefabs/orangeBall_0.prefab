@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorName: Orange
-  speed: 7
+  speed: 100
   culldownTime: 2
 --- !u!58 &-3240205354763979083
 CircleCollider2D:
