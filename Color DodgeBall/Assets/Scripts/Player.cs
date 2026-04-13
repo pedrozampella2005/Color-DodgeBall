@@ -9,12 +9,15 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject blueBallPrefab;
     [SerializeField] private GameObject redBallPrefab;
     [SerializeField] private GameObject orangeBallPrefab;
-   private BallStack ballStack;
+    [SerializeField] private BoxCollider2D boundary;
+
+    private BallStack ballStack;
     private Rigidbody2D rb;
     private Vector2 movementInput;
     private Camera cam;
     private bool isOnCulldown = false;
-    private bool touchingFloor = true;
+    private bool touchingFloor = false;
+
 
     void Start()
     {
@@ -33,34 +36,29 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!touchingFloor)
+        rb.linearVelocity = movementInput.normalized * speed;
 
-        if (movementInput != Vector2.zero)
-        {
-            
-            rb.linearVelocity = movementInput * speed;
-        }
-        else
-        {
-            rb.linearVelocity = Vector2.zero;
-        }
+        Vector3 pos = transform.position;
+        Bounds bounds = boundary.bounds;
+
+        pos.x = Mathf.Clamp(pos.x, bounds.min.x, bounds.max.x);
+        pos.y = Mathf.Clamp(pos.y, bounds.min.y, bounds.max.y);
+
+        transform.position = pos;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Floor"))
         {
             touchingFloor = true;
+            Debug.Log("Colision con : " + collision.gameObject.name);   
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Floor"))
-        {
-            touchingFloor = false;
-        }
-    }
+
+  
 
 
 
