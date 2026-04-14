@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -11,6 +12,12 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject orangeBallPrefab;
     [SerializeField] private BoxCollider2D boundary;
 
+
+
+    [SerializeField] private Transform stackPanel;
+    [SerializeField] private GameObject ballIcon;
+
+    [SerializeField] private UIAnimator animatorUI;
     private BallStack ballStack;
     private Rigidbody2D rb;
     private Vector2 movementInput;
@@ -21,6 +28,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        animatorUI = FindAnyObjectByType<UIAnimator>();
         rb = GetComponent<Rigidbody2D>();
         playerInput = GetComponent<PlayerInput>();
         cam = Camera.main;
@@ -72,6 +80,7 @@ public class Player : MonoBehaviour
             
             Debug.Log("Hola");
             ballStack.Push(blueBallPrefab);
+            AddIconToUI(Color.blue);
         }
     }
 
@@ -81,6 +90,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("Hola 2");
             ballStack.Push(orangeBallPrefab);
+            AddIconToUI(Color.orange);
         }
     }
     public void PushRedBall(InputAction.CallbackContext ctx)
@@ -89,6 +99,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("Hola3");
             ballStack.Push(redBallPrefab);
+            AddIconToUI(Color.red);
         }
     }
 
@@ -113,16 +124,22 @@ public class Player : MonoBehaviour
                 if (ballComponent != null)
                 {
                     StartCoroutine(CullDown(ballComponent.culldownTime));
-                    Debug.Log("Pelota agarrada de color: " + ballComponent.colorName);
-                    Debug.Log("Culldown iniciado para la pelota: " + ball.name + "Tiempo de CullDown:  " + ballComponent.culldownTime);
+                    RemoveIconFromUI();
                 }
 
                 Rigidbody2D ballRb = ballInstance.GetComponent<Rigidbody2D>();
 
                 if(ballRb != null)
                 {
-                    ballRb.AddForce(Vector2.right * ballComponent.speed, ForceMode2D.Impulse);
-                    
+                    Vector2 direction = movementInput.normalized;
+                    if (direction == Vector2.zero)
+                    {
+                        direction = transform.right;
+                    }
+                    ballRb.AddForce(direction * ballComponent.speed, ForceMode2D.Impulse);
+
+
+
                 }
             }
         }
@@ -136,5 +153,27 @@ public class Player : MonoBehaviour
         isOnCulldown = true;
         yield return new WaitForSeconds(time);
         isOnCulldown = false;
+    }
+
+
+
+    private void AddIconToUI(Color color)
+    {
+        GameObject icon = Instantiate(ballIcon, stackPanel);
+        icon.GetComponent<Image>().color = color;
+
+
+        StartCoroutine(animatorUI.Appear(icon, 0.4f));
+    }
+
+
+    private void RemoveIconFromUI()
+    {
+        if(stackPanel.childCount > 0)
+        {
+            GameObject last = stackPanel.GetChild(stackPanel.childCount - 1).gameObject;
+            StartCoroutine(animatorUI.Disappear(last, 0.4f));
+        }
+
     }
 }
