@@ -88,30 +88,30 @@
                 },
                 {
                     "name": "PushBlueBall",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "4529104b-7031-4fa0-92d2-160c65cee7ef",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "PushOrangeBall",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "5813919e-5ae1-4f4c-bc38-247afaceb3b9",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "PushRedBall",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "940e7546-0026-4199-b429-8db739e359a6",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "PopBall",
@@ -121,6 +121,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Scroll",
+                    "type": "Value",
+                    "id": "4cd3c501-72be-43e8-bf3d-5723fc5ae5de",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -512,7 +521,7 @@
                 {
                     "name": "",
                     "id": "d193fc90-5be6-4804-bdcb-2a1d13fdb844",
-                    "path": "<Keyboard>/numpad1",
+                    "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -523,7 +532,7 @@
                 {
                     "name": "",
                     "id": "a40cefbb-31d4-4704-b5e9-a46aefeeab88",
-                    "path": "<Keyboard>/numpad2",
+                    "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -534,7 +543,7 @@
                 {
                     "name": "",
                     "id": "be98317a-81aa-48f5-8491-65c35de54638",
-                    "path": "<Keyboard>/numpad3",
+                    "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -545,11 +554,22 @@
                 {
                     "name": "",
                     "id": "cdf1f76c-5cfb-458a-9707-ef00c9fbc33b",
-                    "path": "<Keyboard>/p",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "PopBall",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ef260b6a-ba80-4606-a95b-aaa8bf8b10b7",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Scroll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

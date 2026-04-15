@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -26,19 +27,92 @@ public class Player : MonoBehaviour
     private bool touchingFloor = false;
 
 
-    void Start()
+    private float scrollCooldown = 0.1f;
+private float lastScrollTime = 0f;
+    private int ticksCount = 0;
+private GameObject[] ballPrefabs; // array de prefabs
+private Color[] ballColors;       // array de colores
+
+void Start()
+{
+    animatorUI = FindAnyObjectByType<UIAnimator>();
+    rb = GetComponent<Rigidbody2D>();
+    playerInput = GetComponent<PlayerInput>();
+    cam = Camera.main;
+    ballStack = new BallStack();
+    ballStack.Init(2000);
+
+    // Inicializar arrays
+    ballPrefabs = new GameObject[] { blueBallPrefab, orangeBallPrefab, redBallPrefab };
+    ballColors = new Color[] { Color.blue, Color.orange, Color.red };
+
+    // Suscribirse al evento Scroll
+    playerInput.actions["Scroll"].performed += OnScroll;
+}
+
+    private void OnDisable()
     {
-        animatorUI = FindAnyObjectByType<UIAnimator>();
-        rb = GetComponent<Rigidbody2D>();
-        playerInput = GetComponent<PlayerInput>();
-        cam = Camera.main;
-        ballStack = new BallStack();
-        ballStack.Init(3);
+        playerInput.actions["Scroll"].performed -= OnScroll;
     }
+
+
+
+    private void OnScroll(InputAction.CallbackContext ctx)
+    {
+        int scrollTick = (int)Mathf.Sign(ctx.ReadValue<Vector2>().y);
+
+        if (scrollTick > 0)
+            {
+            if (Time.time - lastScrollTime > scrollCooldown) 
+            {
+
+                ticksCount = 0;
+            
+            }
+                // aumentar el contador
+            ticksCount++;
+            lastScrollTime = Time.time;
+
+
+            if (ticksCount == 1)
+                {
+                    
+                    ballStack.Push(blueBallPrefab);
+                    AddIconToUI(Color.blue);
+                    
+                }
+
+
+                else if (ticksCount == 2)
+                {
+                    ballStack.Push(orangeBallPrefab);
+                AddIconToUI(Color.orange);
+                  
+                }
+                else if (ticksCount == 3)
+                {
+                    ballStack.Push(redBallPrefab);
+                    AddIconToUI(Color.red);
+                    ticksCount = 0; // reinicio después de rojo
+                }
+            }
+        
+
+            
+        
+    }
+
+
+
+
+
 
     void Update()
     {
         movementInput = playerInput.actions["Move"].ReadValue<Vector2>();
+
+      
+        
 
     }
 
@@ -66,44 +140,16 @@ public class Player : MonoBehaviour
     }
 
 
-  
 
 
 
 
 
 
-    public void PushBlueBall(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed)
-        {
-            
-            Debug.Log("Hola");
-            ballStack.Push(blueBallPrefab);
-            AddIconToUI(Color.blue);
-        }
-    }
 
-    public void PushOrangeBall(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed)
-        {
-            Debug.Log("Hola 2");
-            ballStack.Push(orangeBallPrefab);
-            AddIconToUI(Color.orange);
-        }
-    }
-    public void PushRedBall(InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed)
-        {
-            Debug.Log("Hola3");
-            ballStack.Push(redBallPrefab);
-            AddIconToUI(Color.red);
-        }
-    }
 
-   public void PopBall(InputAction.CallbackContext ctx)
+
+    public void PopBall(InputAction.CallbackContext ctx)
     {
 
         if (ctx.performed && !isOnCulldown)
@@ -135,6 +181,11 @@ public class Player : MonoBehaviour
                     if (direction == Vector2.zero)
                     {
                         direction = transform.right;
+                    }
+
+                    else if(direction == Vector2.one)
+                    {
+                        direction = transform.forward;
                     }
                     ballRb.AddForce(direction * ballComponent.speed, ForceMode2D.Impulse);
 
