@@ -1016,9 +1016,9 @@ MonoBehaviour:
   - nombreNivel: 1
     enemigos:
     - enemyPrefab: {fileID: 716143906}
-      cantidad: 3
-  usarSpawnAleatorio: 0
-  usarObjetivoAleatorio: 0
+      cantidad: 10
+  usarSpawnAleatorio: 1
+  usarObjetivoAleatorio: 1
 --- !u!4 &784939459
 Transform:
   m_ObjectHideFlags: 0

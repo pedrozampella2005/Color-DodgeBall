@@ -16,80 +16,6 @@ public class LevelConfig
     public List<EnemyLevelEntry> enemigos = new List<EnemyLevelEntry>();
 }
 
-// TDA Cola 
-public interface ColaEnemigosTDA
-{
-    void InicializarCola(int capacidad);
-    void Acolar(GameObject x);
-    void Desacolar();
-    bool ColaVacia();
-    GameObject Primero();
-    int Cantidad();
-}
-
-public class ColaEnemigosTF : ColaEnemigosTDA
-{
-    private GameObject[] a;
-    private int indice;
-
-    public void InicializarCola(int capacidad)
-    {
-        if (capacidad < 1)
-        {
-            capacidad = 1;
-        }
-
-        a = new GameObject[capacidad];
-        indice = 0;
-    }
-
-    public void Acolar(GameObject x)
-    {
-        if (indice >= a.Length)
-        {
-            Debug.LogWarning("La cola de enemigos esta llena.");
-            return;
-        }
-
-        for (int i = indice - 1; i >= 0; i--)
-        {
-            a[i + 1] = a[i];
-        }
-
-        a[0] = x;
-        indice++;
-    }
-
-    public void Desacolar()
-    {
-        if (!ColaVacia())
-        {
-            a[indice - 1] = null;
-            indice--;
-        }
-    }
-
-    public bool ColaVacia()
-    {
-        return indice == 0;
-    }
-
-    public GameObject Primero()
-    {
-        if (!ColaVacia())
-        {
-            return a[indice - 1];
-        }
-
-        return null;
-    }
-
-    public int Cantidad()
-    {
-        return indice;
-    }
-}
-
 public class ColaEnemigosManager : MonoBehaviour
 {
     [Header("Puntos de spawn")]
@@ -111,8 +37,8 @@ public class ColaEnemigosManager : MonoBehaviour
     [SerializeField] private bool usarSpawnAleatorio = false;
     [SerializeField] private bool usarObjetivoAleatorio = false;
 
-    //  aca el TDA Cola
-    private ColaEnemigosTF colaEnemigos;
+    // El manager solo usa la cola
+    private ColaEnemigosTDA colaEnemigos;
 
     private Coroutine rutinaSpawn;
     private int indiceSpawnActual = 0;
@@ -176,13 +102,11 @@ public class ColaEnemigosManager : MonoBehaviour
             return;
         }
 
-        // Se reinicializa la cola con la capacidad exacta del nivel
         colaEnemigos = new ColaEnemigosTF();
         colaEnemigos.InicializarCola(Mathf.Max(1, CalcularCapacidadNivel(numeroNivel)));
 
         LevelConfig config = niveles[numeroNivel - 1];
 
-        // Aca se carga la cola con los enemigos del nivel
         for (int i = 0; i < config.enemigos.Count; i++)
         {
             EnemyLevelEntry entry = config.enemigos[i];
@@ -201,8 +125,6 @@ public class ColaEnemigosManager : MonoBehaviour
 
     IEnumerator ProcesarCola()
     {
-        // Aca se usa la cola:
-        // se toma el primero, se instancia, y luego se desacola
         while (!ColaVacia())
         {
             GameObject enemigoPrefab = Primero();
