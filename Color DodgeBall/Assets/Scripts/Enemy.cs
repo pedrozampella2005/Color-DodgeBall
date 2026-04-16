@@ -1,14 +1,17 @@
+using NUnit.Framework;
 using UnityEngine;
 
-//no hay coliccion contra las pelotas de colores
+public enum EnemyColor { Blue, Orange, Red};
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float speed = 3f;
 
+  
     private Rigidbody2D rb;
     private Transform targetPoint;
+    [SerializeField] private EnemyColor color;
     private bool reachedTarget = false;
-
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -37,6 +40,31 @@ public class Enemy : MonoBehaviour
         }
     }
 
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("Blue") && color == EnemyColor.Blue)
+        {
+            Destroy(gameObject);
+            Debug.Log("Destruido azul");
+        }
+        if(collision.gameObject.CompareTag("Orange") && color == EnemyColor.Orange)
+        {
+            Destroy(gameObject);
+            Debug.Log("Destruido naranja");
+        }
+        if(collision.gameObject.CompareTag("Red") && color == EnemyColor.Red)
+        {
+            Destroy(gameObject);
+            Debug.Log("Destruido rojo");
+        }
+
+
+        if(collision.gameObject.CompareTag("DeadPoint"))
+        {
+            Destroy(gameObject);
+        }
+    }
     public void SetTarget(Transform newTarget)
     {
         targetPoint = newTarget;

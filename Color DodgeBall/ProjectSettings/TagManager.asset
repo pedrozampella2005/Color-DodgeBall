@@ -7,6 +7,10 @@ TagManager:
   - Floor
   - Enemy
   - Unfloor
+  - Blue
+  - Red
+  - Orange
+  - DeadPoint
   layers:
   - Default
   - TransparentFX

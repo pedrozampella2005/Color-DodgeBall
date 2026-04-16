@@ -37,6 +37,8 @@ public class ColaEnemigosManager : MonoBehaviour
     [SerializeField] private bool usarSpawnAleatorio = false;
     [SerializeField] private bool usarObjetivoAleatorio = false;
 
+
+
     // El manager solo usa la cola
     private ColaEnemigosTDA colaEnemigos;
 
@@ -129,6 +131,12 @@ public class ColaEnemigosManager : MonoBehaviour
         {
             GameObject enemigoPrefab = Primero();
 
+            if(enemigoPrefab == null)
+            {
+                Debug.LogWarning("Prefab no asignado");
+                Desacolar();
+                continue;
+            }
             Transform spawnElegido = ObtenerSpawn();
             Transform objetivoElegido = ObtenerObjetivo();
 

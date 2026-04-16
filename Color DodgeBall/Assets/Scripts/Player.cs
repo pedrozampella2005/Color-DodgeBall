@@ -40,7 +40,7 @@ void Start()
     playerInput = GetComponent<PlayerInput>();
     cam = Camera.main;
     ballStack = new BallStack();
-    ballStack.Init(2000);
+    ballStack.Init(1000);
 
     // Inicializar arrays
     ballPrefabs = new GameObject[] { blueBallPrefab, orangeBallPrefab, redBallPrefab };
@@ -183,10 +183,12 @@ void Start()
                         direction = transform.right;
                     }
 
-                    else if(direction == Vector2.one)
+                    else
                     {
-                        direction = transform.forward;
+                        direction = movementInput.normalized;
                     }
+                    
+                
                     ballRb.AddForce(direction * ballComponent.speed, ForceMode2D.Impulse);
 
 
