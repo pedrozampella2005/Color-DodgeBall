@@ -1,53 +1,90 @@
-using System.Linq;
 using TMPro;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TimerManager : MonoBehaviour
 {
     [Header("Time Settings")]
-    [SerializeField] public float time;
-    [SerializeField] private LevelConfig levelConfig;
-    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private float time = 60f;
+    [SerializeField] private int requiredKills = 5;
+    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI killsText;
+
+    
+    // ahora se  cuenta enemigos correctos eliminó el jugador
+    private int currentKills = 0;
+
+    // CAMBIO
+    // esta bandera evita que la lógica de derrota/victoria se ejecute más de una vez
+    private bool gameFinished = false;
 
     void Update()
     {
-      
+        if (gameFinished)
+        {
+            return;
+        }
 
+        time -= Time.deltaTime;
 
-            if (levelConfig.enemigos.Count > 0)
+        // CAMBIO
+        // se evita que el tiempo siga bajando a negativos
+        if (time < 0f)
+        {
+            time = 0f;
+        }
+
+        if (timerText != null)
+        {
+            timerText.text = time.ToString("F2");
+        }
+
+        // CAMBIO
+        // se muestra progreso de bajas en UI
+        if (killsText != null)
+        {
+            killsText.text = currentKills + " / " + requiredKills;
+        }
+
+        if (time <= 20f && timerText != null)
+        {
+            timerText.color = Color.red;
+        }
+
+        // CAMBIO RECONTRA IMPORTANTE 
+        // antes se comparaba  con == 0 y podía fallar por ser float
+        // ahora se usa <= 0f
+        if (time <= 0f)
+        {
+            gameFinished = true;
+
+            // CAMBIO:
+            // la derrota ahora depende de si no llegaste a la cantidad de bajas pedida
+            if (currentKills < requiredKills)
             {
-                time -= Time.deltaTime;
-                text.text = time.ToString("F2"); // mostrar con 2 decimales
-
-                if(time <= 20)
-                {
-                    text.color = Color.softRed;
-                    
-                }
-
-
-                if(time == 0)
-                {
-                    ChangeScene("Defeat");
-                }
+                ChangeScene("Defeat");
             }
-
-        
+            else
+            {
+                Debug.Log("El jugador cumplio la cantidad de bajas requerida.");
+            }
+        }
     }
 
+    // CAMBIO
+    // este metodo lo llama el enemigo cuando muere correctamente
+    public void RegisterKill()
+    {
+        if (gameFinished)
+        {
+            return;
+        }
+
+        currentKills++;
+    }
 
     public void ChangeScene(string sceneName)
     {
-
         SceneManager.LoadScene(sceneName);
-
     }
-
-
-
-
-
-
 }
