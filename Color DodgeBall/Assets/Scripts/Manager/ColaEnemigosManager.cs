@@ -37,57 +37,15 @@ public class ColaEnemigosManager : MonoBehaviour
     [SerializeField] private bool usarSpawnAleatorio = false;
     [SerializeField] private bool usarObjetivoAleatorio = false;
 
-
-
-    // El manager solo usa la cola
-    private ColaEnemigosTDA colaEnemigos;
-
+    private ColaEnemigosTF colaEnemigos;
     private Coroutine rutinaSpawn;
     private int indiceSpawnActual = 0;
     private int indiceObjetivoActual = 0;
 
     void Start()
     {
-        InicializarCola();
         CargarNivel(nivelActual);
         rutinaSpawn = StartCoroutine(ProcesarCola());
-    }
-
-    public void InicializarCola()
-    {
-        colaEnemigos = new ColaEnemigosTF();
-        colaEnemigos.InicializarCola(Mathf.Max(1, CalcularCapacidadNivel(nivelActual)));
-    }
-
-    public void Acolar(GameObject enemigoPrefab)
-    {
-        if (colaEnemigos != null && enemigoPrefab != null)
-        {
-            colaEnemigos.Acolar(enemigoPrefab);
-        }
-    }
-
-    public void Desacolar()
-    {
-        if (colaEnemigos != null && !colaEnemigos.ColaVacia())
-        {
-            colaEnemigos.Desacolar();
-        }
-    }
-
-    public bool ColaVacia()
-    {
-        return colaEnemigos == null || colaEnemigos.ColaVacia();
-    }
-
-    public GameObject Primero()
-    {
-        if (!ColaVacia())
-        {
-            return colaEnemigos.Primero();
-        }
-
-        return null;
     }
 
     public void CargarNivel(int numeroNivel)
@@ -117,7 +75,7 @@ public class ColaEnemigosManager : MonoBehaviour
             {
                 for (int j = 0; j < entry.cantidad; j++)
                 {
-                    Acolar(entry.enemyPrefab);
+                    colaEnemigos.Acolar(entry.enemyPrefab);
                 }
             }
         }
@@ -127,16 +85,10 @@ public class ColaEnemigosManager : MonoBehaviour
 
     IEnumerator ProcesarCola()
     {
-        while (!ColaVacia())
+        while (colaEnemigos != null && !colaEnemigos.ColaVacia())
         {
-            GameObject enemigoPrefab = Primero();
+            GameObject enemigoPrefab = colaEnemigos.Primero();
 
-            if(enemigoPrefab == null)
-            {
-                Debug.LogWarning("Prefab no asignado");
-                Desacolar();
-                continue;
-            }
             Transform spawnElegido = ObtenerSpawn();
             Transform objetivoElegido = ObtenerObjetivo();
 
@@ -154,7 +106,7 @@ public class ColaEnemigosManager : MonoBehaviour
                 enemy.SetTarget(objetivoElegido);
             }
 
-            Desacolar();
+            colaEnemigos.Desacolar();
 
             yield return new WaitForSeconds(tiempoEntreEnemigos);
         }
