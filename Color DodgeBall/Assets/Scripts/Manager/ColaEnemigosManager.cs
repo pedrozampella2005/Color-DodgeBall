@@ -89,6 +89,8 @@ public class ColaEnemigosManager : MonoBehaviour
         {
             GameObject enemigoPrefab = colaEnemigos.Primero();
 
+            
+
             Transform spawnElegido = ObtenerSpawn();
             Transform objetivoElegido = ObtenerObjetivo();
 

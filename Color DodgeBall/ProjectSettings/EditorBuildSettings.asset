@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Level 1.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
+    path: Assets/Scenes/Level 2.unity
+    guid: 2d5e1bd099c9c144687419894f018fb9
+  - enabled: 1
     path: Assets/Scenes/Defeat.unity
     guid: 31464aba17faf564b9514a65c270f585
   m_configObjects:
