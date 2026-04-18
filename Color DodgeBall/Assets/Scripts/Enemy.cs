@@ -26,9 +26,7 @@ public class Enemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
-        // Se cambio:
-        // busca el timer una sola vez al iniciar
-        timerManager = FindAnyObjectByType<TimerManager>();
+       
     }
 
     void FixedUpdate()
@@ -56,6 +54,8 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
+        timerManager = FindAnyObjectByType<TimerManager>();
         // se cambio:
         // cuando la pelota coincide con el color del enemigo:
         // se avisa al TimerManager que sume una baja
@@ -64,9 +64,11 @@ public class Enemy : MonoBehaviour
         {
             if (timerManager != null)
             {
-                timerManager.RegisterKill();
-            }
 
+
+                timerManager.RegisterKill();
+
+            }
             Destroy(gameObject);
             Debug.Log("Destruido azul");
         }
@@ -75,9 +77,10 @@ public class Enemy : MonoBehaviour
         {
             if (timerManager != null)
             {
+
+
                 timerManager.RegisterKill();
             }
-
             Destroy(gameObject);
             Debug.Log("Destruido naranja");
         }
@@ -88,7 +91,7 @@ public class Enemy : MonoBehaviour
             {
                 timerManager.RegisterKill();
             }
-
+            
             Destroy(gameObject);
             Debug.Log("Destruido rojo");
         }

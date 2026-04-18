@@ -6,7 +6,7 @@ public class TimerManager : MonoBehaviour
 {
     [Header("Time Settings")]
     [SerializeField] private float time = 60f;
-    [SerializeField] private int requiredKills = 5;
+    [SerializeField] private int requiredKills;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI killsText;
 
@@ -41,10 +41,10 @@ public class TimerManager : MonoBehaviour
 
         // CAMBIO
         // se muestra progreso de bajas en UI
-        if (killsText != null)
-        {
-            killsText.text = currentKills + " / " + requiredKills;
-        }
+        //if (killsText != null)
+        //{
+        //    killsText.text = currentKills + " / " + requiredKills;
+        //}
 
         if (time <= 20f && timerText != null)
         {
@@ -64,10 +64,16 @@ public class TimerManager : MonoBehaviour
             {
                 ChangeScene("Defeat");
             }
-            else
+           
+        }
+
+
+        if(time > 0f)
+        {
+            if(currentKills == requiredKills) 
             {
-                Debug.Log("El jugador cumplio la cantidad de bajas requerida.");
-            }
+                ChangeScene("Level 2");
+            };
         }
     }
 
@@ -81,6 +87,12 @@ public class TimerManager : MonoBehaviour
         }
 
         currentKills++;
+        Debug.Log("currentKills:" + currentKills);
+        if (killsText != null)
+        {
+            killsText.text = currentKills + " / " + requiredKills;
+        }
+
     }
 
     public void ChangeScene(string sceneName)
