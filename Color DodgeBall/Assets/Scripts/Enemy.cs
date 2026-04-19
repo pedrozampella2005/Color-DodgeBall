@@ -1,6 +1,5 @@
-//Te dejo cambios
-
 using UnityEngine;
+
 public enum EnemyColor
 {
     Blue,
@@ -16,17 +15,12 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rb;
     private Transform targetPoint;
     private bool reachedTarget = false;
-
-    // Se cambio:
-    //  referencia al TimerManager para avisarle cuando el jugador mata
-    // un enemigo correcto
     private TimerManager timerManager;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
-       
+        timerManager = FindAnyObjectByType<TimerManager>();
     }
 
     void FixedUpdate()
@@ -54,52 +48,35 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
-        timerManager = FindAnyObjectByType<TimerManager>();
-        // se cambio:
-        // cuando la pelota coincide con el color del enemigo:
-        // se avisa al TimerManager que sume una baja
-        // se destrulle el enemigo
         if (collision.gameObject.CompareTag("Blue") && color == EnemyColor.Blue)
         {
-            if (timerManager != null)
-            {
-
-
-                timerManager.RegisterKill();
-
-            }
-            Destroy(gameObject);
-            Debug.Log("Destruido azul");
+            RegistrarKillYDestruir();
         }
 
         if (collision.gameObject.CompareTag("Orange") && color == EnemyColor.Orange)
         {
-            if (timerManager != null)
-            {
-
-
-                timerManager.RegisterKill();
-            }
-            Destroy(gameObject);
-            Debug.Log("Destruido naranja");
+            RegistrarKillYDestruir();
         }
 
         if (collision.gameObject.CompareTag("Red") && color == EnemyColor.Red)
         {
-            if (timerManager != null)
-            {
-                timerManager.RegisterKill();
-            }
-            
-            Destroy(gameObject);
-            Debug.Log("Destruido rojo");
+            RegistrarKillYDestruir();
         }
 
         if (collision.gameObject.CompareTag("DeadPoint"))
         {
             Destroy(gameObject);
         }
+    }
+
+    private void RegistrarKillYDestruir()
+    {
+        if (timerManager != null)
+        {
+            timerManager.RegisterKill();
+        }
+
+        Destroy(gameObject);
     }
 
     public void SetTarget(Transform newTarget)

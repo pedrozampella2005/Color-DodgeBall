@@ -2,21 +2,28 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class TimerManager : MonoBehaviour
 {
     [Header("Time Settings")]
     [SerializeField] private float time = 60f;
     [SerializeField] private int requiredKills = 5;
+
+    [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TextMeshProUGUI killsText;
+
+    [Header("Scenes")]
+    [SerializeField] private string defeatSceneName = "Defeat";
+    [SerializeField] private string victorySceneName = "Victory";
+
+    [Header("Victory Condition")]
+    [SerializeField] private string victoryLevelName = "Level2";
 
     private int currentKills = 0;
     private bool gameFinished = false;
 
     void Start()
     {
-        // Guarda el nombre del nivel actual al empezar
         GameFlowData.lastLevelSceneName = SceneManager.GetActiveScene().name;
     }
 
@@ -49,17 +56,24 @@ public class TimerManager : MonoBehaviour
             timerText.color = Color.red;
         }
 
+        
+        // Si el jugador llega a la cantidad de kills requeridas
+        // y está en el nivel configurado para victoria, gana automáticamente
+        if (currentKills >= requiredKills && SceneManager.GetActiveScene().name == victoryLevelName)
+        {
+            gameFinished = true;
+            ChangeScene(victorySceneName);
+            return;
+        }
+
+        
         if (time <= 0f)
         {
             gameFinished = true;
 
             if (currentKills < requiredKills)
             {
-                ChangeScene("Defeat");
-            }
-            else
-            {
-                Debug.Log("El jugador cumplio la cantidad de bajas requerida.");
+                ChangeScene(defeatSceneName);
             }
         }
     }
