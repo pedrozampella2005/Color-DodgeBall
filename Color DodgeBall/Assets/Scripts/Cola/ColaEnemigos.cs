@@ -1,5 +1,5 @@
 using UnityEngine;
-
+//La interfaz
 public interface ColaEnemigosTDA
 {
     void InicializarCola(int capacidad);
@@ -12,7 +12,7 @@ public interface ColaEnemigosTDA
 
 public class ColaEnemigosTF : ColaEnemigosTDA
 {
-    private GameObject[] a;
+    private GameObject[] a; // es el arreglo donde se gusrda los enemigos
     private int indice;
 
     public void InicializarCola(int capacidad)
@@ -22,10 +22,11 @@ public class ColaEnemigosTF : ColaEnemigosTDA
             capacidad = 1;
         }
 
-        a = new GameObject[capacidad];
+        a = new GameObject[capacidad];//se crea una cola para cierta cantidad de enemigos y arranca con 0
         indice = 0;
     }
 
+    //Aca entra los enemigos 
     public void Acolar(GameObject x)
     {
         if (indice >= a.Length)
@@ -39,10 +40,11 @@ public class ColaEnemigosTF : ColaEnemigosTDA
             a[i + 1] = a[i];
         }
 
-        a[0] = x;
-        indice++;
+        a[0] = x;//Entra el enemigo
+        indice++;//cantidad
     }
 
+    //sale enemigo de la cola
     public void Desacolar()
     {
         if (!ColaVacia())
@@ -57,11 +59,12 @@ public class ColaEnemigosTF : ColaEnemigosTDA
         return indice == 0;
     }
 
+    //Sabe cual va a salir primero
     public GameObject Primero()
     {
         if (!ColaVacia())
         {
-            return a[indice - 1];
+            return a[indice - 1];//mueve el mas viejo elemento a la derecha para q salga el primero 
         }
 
         return null;

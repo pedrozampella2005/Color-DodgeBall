@@ -37,7 +37,7 @@ public class ColaEnemigosManager : MonoBehaviour
     [SerializeField] private bool usarSpawnAleatorio = false;
     [SerializeField] private bool usarObjetivoAleatorio = false;
 
-    private ColaEnemigosTF colaEnemigos;
+    private ColaEnemigosTF colaEnemigos;//cola
     private Coroutine rutinaSpawn;
     private int indiceSpawnActual = 0;
     private int indiceObjetivoActual = 0;
@@ -62,8 +62,8 @@ public class ColaEnemigosManager : MonoBehaviour
             return;
         }
 
-        colaEnemigos = new ColaEnemigosTF();
-        colaEnemigos.InicializarCola(Mathf.Max(1, CalcularCapacidadNivel(numeroNivel)));
+        colaEnemigos = new ColaEnemigosTF();//crea cola 
+        colaEnemigos.InicializarCola(Mathf.Max(1, CalcularCapacidadNivel(numeroNivel)));//la inicializa 
 
         LevelConfig config = niveles[numeroNivel - 1];
 
@@ -83,6 +83,7 @@ public class ColaEnemigosManager : MonoBehaviour
         Debug.Log("Nivel cargado: " + config.nombreNivel + " | Enemigos en cola: " + colaEnemigos.Cantidad());
     }
 
+    //se conecta la cola con la esena 
     IEnumerator ProcesarCola()
     {
         while (colaEnemigos != null && !colaEnemigos.ColaVacia())
