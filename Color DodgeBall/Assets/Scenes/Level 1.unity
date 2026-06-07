@@ -1661,7 +1661,6 @@ GameObject:
   - component: {fileID: 1380623507}
   - component: {fileID: 1380623510}
   - component: {fileID: 1380623509}
-  - component: {fileID: 1380623508}
   m_Layer: 5
   m_Name: Time
   m_TagString: Untagged
@@ -1688,22 +1687,6 @@ RectTransform:
   m_AnchoredPosition: {x: 2, y: -53}
   m_SizeDelta: {x: 216.6725, y: 51.9002}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1380623508
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1380623506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29ffc0dddc27f20448e5301b540ca152, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 60
-  requiredKills: 5
-  timerText: {fileID: 1380623509}
-  killsText: {fileID: 1842528352}
 --- !u!114 &1380623509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1882,6 +1865,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1601743598
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1601743600}
+  - component: {fileID: 1601743599}
+  m_Layer: 0
+  m_Name: TimerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1601743599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1601743598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ffc0dddc27f20448e5301b540ca152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 60
+  requiredKills: 5
+  timerText: {fileID: 1380623509}
+  killsText: {fileID: 1842528352}
+  defeatSceneName: Defeat
+  victorySceneName: Victory
+--- !u!4 &1601743600
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1601743598}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 596.62286, y: 249.2593, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1842528349
 GameObject:
   m_ObjectHideFlags: 0
@@ -1893,7 +1926,6 @@ GameObject:
   - component: {fileID: 1842528350}
   - component: {fileID: 1842528353}
   - component: {fileID: 1842528352}
-  - component: {fileID: 1842528351}
   m_Layer: 5
   m_Name: Kills
   m_TagString: Untagged
@@ -1920,22 +1952,6 @@ RectTransform:
   m_AnchoredPosition: {x: 146, y: 57.99994}
   m_SizeDelta: {x: 228, y: 74}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1842528351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1842528349}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29ffc0dddc27f20448e5301b540ca152, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 60
-  requiredKills: 5
-  timerText: {fileID: 1380623509}
-  killsText: {fileID: 1842528352}
 --- !u!114 &1842528352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2391,3 +2407,4 @@ SceneRoots:
   - {fileID: 910356507}
   - {fileID: 1444209271}
   - {fileID: 712071361}
+  - {fileID: 1601743600}
